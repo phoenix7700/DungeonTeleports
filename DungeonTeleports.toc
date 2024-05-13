@@ -1,0 +1,8 @@
+#### Interface: 100207
+## Version: 1.0.0
+## Title: Dungeon Teleports
+## Notes: Add clickable dungeon teleports to Mythic+ Dungeons tab
+## Author: Phoenix7700
+## SavedVariables: DTDB
+
+DungeonTeleports.lua
