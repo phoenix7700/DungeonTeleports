@@ -4,6 +4,7 @@ local f = shared.f
 local name = "DungeonTeleports"
 f = CreateFrame("Frame", name, ChallengesFrame)
 
+
 local defaults = {
 	isMinimal = false,
 }
@@ -21,6 +22,8 @@ cb:SetPoint("TOPLEFT", 20,-20)
 cb.Text:SetText("Minimal")
 cb:HookScript("OnClick", function()
 	f.db.isMinimal = not f.db.isMinimal
+	f.isbuttonscreated = false
+	f:CreateDungeonButtons()	
 end)
 
 
@@ -56,6 +59,39 @@ f:HookScript("OnEvent",OnEvent)
 f.isbuttonscreated = false
 f.DTButtons = {}
 
+local function isMinimalCreateTextures(frame)
+	local glowSize = 100
+	if not f.db.isMinimal then 
+		--Circles
+		frame.innerCircle = frame.innerCircle or frame:CreateTexture()
+		frame.innerCircle:SetPoint("CENTER")
+		frame.innerCircle:SetAllPoints()
+		frame.innerCircle:SetDrawLayer("OVERLAY",7)
+				
+		--Small
+		frame.innerFrame.highlight = frame.innerFramehighlight or frame.innerFrame:CreateTexture()
+		frame.innerFrame.highlight:SetPoint("CENTER")
+		frame.innerFrame.highlight:SetSize(40,40)
+		frame.innerFrame.highlight:SetBlendMode("ADD")
+		frame.innerFrame.highlight:SetDrawLayer("OVERLAY",7)
+		
+		frame.innerFrame.highlight2 = frame.innerFramehighlight2 or frame.innerFrame:CreateTexture()
+		frame.innerFrame.highlight2:SetPoint("CENTER")
+		frame.innerFrame.highlight2:SetSize(40,40)
+		frame.innerFrame.highlight2:SetBlendMode("BLEND")
+		frame.innerFrame.highlight2:SetDrawLayer("OVERLAY",7)
+		
+		--Glow
+		frame.glowFrame.glow = frame.glowFrame.glow or frame.glowFrame:CreateTexture()
+		frame.glowFrame.glow:SetPoint("CENTER")
+		frame.glowFrame.glow:SetSize(50,50)
+		frame.glowFrame.glow:SetScale(1,1)
+		frame.glowFrame.glow:SetVertexColor(0.2745,0.7529,0.8313)
+		frame.glowFrame.glow:SetBlendMode("ADD")
+		frame.glowFrame.glow:SetDrawLayer("OVERLAY",7)
+	end
+end
+
 function f:CreateDungeonButtons ()
 	if InCombatLockdown() then return end
 	if not ChallengesFrame then return end
@@ -66,12 +102,12 @@ function f:CreateDungeonButtons ()
 	if not self.isbuttonscreated then
 		for k,v in pairs(ChallengesFrame.DungeonIcons) do
 			if v.mapID then
-				if IsSpellKnown(self.DungeonMapToPortal[v.mapID]) then
-					-- ViragDevTool_AddData(CopyTable(ChallengesFrame),"vvvvv")
-					-- ViragDevTool_AddData(ChallengesFrame,"vvvvv no copy")
-					-- ViragDevTool_AddData(type(ChallengesFrame),"type")
-					--ChallengesFrame.DungeonIcons[k].
+				if IsSpellKnown(self.DungeonMapToPortal[v.mapID]) --[[or UnitIsUnit("player","Ragel")]] then
 					local btn = CreateFrame("Button","DTButton",v,"InsecureActionButtonTemplate")
+					btn.innerFrame = CreateFrame("Frame","DTButtonInnerCircle",v)
+					btn.innerFrame:SetAllPoints()
+					btn.glowFrame = CreateFrame("Frame","DTButtonGlow",v)
+					btn.glowFrame:SetAllPoints()
 					btn.portalSpellID = self.DungeonMapToPortal[v.mapID]
 					--btn.portalSpellID = 8936 --8936 Regrowth for testing
 					btn:SetAttribute("type","spell")
@@ -88,128 +124,78 @@ function f:CreateDungeonButtons ()
 					btn.tex:SetAtlas("ChallengeMode-Runes-Large")
 					btn.tex:SetBlendMode("BLEND")
 					btn.tex:SetDrawLayer("OVERLAY",7)
+						
+					--Large					
+					btn.tex2 = btn.tex2 or btn:CreateTexture()
+					btn.tex2:SetPoint("CENTER")
+					btn.tex2:SetAllPoints()
+					btn.tex2:SetBlendMode("BLEND")
+					btn.tex2:SetDrawLayer("OVERLAY",7)
 					
+					btn.animGroup = btn:CreateAnimationGroup()
+					btn.animGroup:SetLooping("REPEAT")
+					btn.rotate1 = btn.animGroup:CreateAnimation("Rotation")
+					btn.rotate1:SetDegrees(360)
+					btn.rotate1:SetDuration(60)
+					btn.rotate1:SetSmoothing("OUT")
+					
+					btn.innerFrame.animGroup = btn.innerFrame:CreateAnimationGroup()
+					btn.innerFrame.animGroup:SetLooping("REPEAT")
+					btn.innerFrame.rotate1 = btn.innerFrame.animGroup:CreateAnimation("Rotation")
+					btn.innerFrame.rotate1:SetDegrees(-360)
+					btn.innerFrame.rotate1:SetDuration(60)
+					btn.innerFrame.rotate1:SetSmoothing("OUT")
+					
+					local startSize = 0.05
+					local finishSize = 1.7
+					btn.glowFrame.animGroup = btn.glowFrame:CreateAnimationGroup()
+					btn.glowFrame.animGroup:SetLooping("REPEAT")
+					btn.glowFrame.scale = btn.glowFrame.animGroup:CreateAnimation("Scale")
+					btn.glowFrame.scale:SetOrder(1)
+					btn.glowFrame.scale:SetScaleFrom(startSize,startSize)
+					btn.glowFrame.scale:SetScaleTo(finishSize,finishSize)
+					btn.glowFrame.scale:SetDuration(5)
+					btn.glowFrame.scale:SetSmoothing("IN_OUT")
+					
+					btn.glowFrame.scale2 = btn.glowFrame.animGroup:CreateAnimation("Scale")
+					btn.glowFrame.scale2:SetOrder(1)
+					btn.glowFrame.scale2:SetDuration(5)
+					btn.glowFrame.scale2:SetScaleFrom(finishSize,finishSize)
+					btn.glowFrame.scale2:SetScaleTo(startSize,startSize)
+					btn.glowFrame.scale2:SetSmoothing("IN_OUT")
+
+										
 					btn:SetScript("OnEnter", function(self2,motion)
-						local glowSize = 100
-						if not self.db.isMinimal then 
-							--[[Lines
-							self2.lines = self2:CreateTexture()
-							self2.lines:SetAtlas("ChallengeMode-Runes-LineGlow")
-							self2.lines:SetPoint("CENTER")
-							self2.lines:SetSize(self2:GetWidth()+8,self2:GetHeight()+8)
-							self2.lines:SetDrawLayer("BACKGROUND")
-							self2.lines:SetBlendMode("BLEND")]]
-							
-							--Circles
-							btn.innerCircle = btn.innerCircle or btn:CreateTexture()
-							btn.innerCircle:SetPoint("CENTER")
-							btn.innerCircle:SetAllPoints()
-							btn.innerCircle:SetAtlas("ChallengeMode-Runes-InnerCircleGlow")
-							btn.innerCircle:SetDrawLayer("OVERLAY",7)
-							
-							--Runes
-							--[[self2.topRune = self2:CreateTexture()
-							self2.topRune:SetAtlas("ChallengeMode-Runes-T-Glow")
-							self2.topRune:SetPoint("TOP",0,15)
-							self2.topRune:SetSize(18,18)
-							self2.topRune:SetDrawLayer("BACKGROUND")
-							self2.topRune:SetBlendMode("ADD")
-							
-							self2.leftRune = self2:CreateTexture()
-							self2.leftRune:SetAtlas("ChallengeMode-Runes-L-Glow")
-							self2.leftRune:SetPoint("LEFT",-12,12)
-							self2.leftRune:SetSize(18,18)
-							self2.leftRune:SetDrawLayer("BACKGROUND")
-							self2.leftRune:SetBlendMode("ADD")
-							
-							self2.rightRune = self2:CreateTexture()
-							self2.rightRune:SetAtlas("ChallengeMode-Runes-R-Glow")
-							self2.rightRune:SetPoint("RIGHT",12,12)
-							self2.rightRune:SetSize(18,18)
-							self2.rightRune:SetDrawLayer("BACKGROUND")
-							self2.rightRune:SetBlendMode("ADD")
-							
-							self2.bottomLeftRune = self2:CreateTexture()
-							self2.bottomLeftRune:SetAtlas("ChallengeMode-Runes-BL-Glow")
-							self2.bottomLeftRune:SetPoint("BOTTOM",-23,-10)
-							self2.bottomLeftRune:SetSize(18,18)
-							self2.bottomLeftRune:SetDrawLayer("BACKGROUND")
-							self2.bottomLeftRune:SetBlendMode("ADD")
-							
-							self2.bottomRightRune = self2:CreateTexture()
-							self2.bottomRightRune:SetAtlas("ChallengeMode-Runes-BR-Glow")
-							self2.bottomRightRune:SetPoint("BOTTOM",23,-10)
-							self2.bottomRightRune:SetSize(18,18)
-							self2.bottomRightRune:SetDrawLayer("BACKGROUND")
-							self2.bottomRightRune:SetBlendMode("ADD")]]
-							
-							
-							--Small
-							self2.highlight = self2.highlight or self2:CreateTexture()
-							self2.highlight:SetAtlas("ChallengeMode-Runes-GlowSmall")
-							self2.highlight:SetPoint("CENTER")
-							self2.highlight:SetSize(40,40)
-							self2.highlight:SetBlendMode("ADD")
-							self2.highlight:SetDrawLayer("OVERLAY",7)
-							
-							self2.highlight2 = self2.highlight2 or self2:CreateTexture()
-							self2.highlight2:SetAtlas("ChallengeMode-Runes-GlowBurstLarge")
-							self2.highlight2:SetPoint("CENTER")
-							self2.highlight2:SetSize(40,40)
-							self2.highlight2:SetBlendMode("BLEND")
-							self2.highlight2:SetDrawLayer("OVERLAY",7)
-							
-							--Glow
-							self2.glow = self2.glow or self2:CreateTexture()
-							self2.glow:SetAtlas("BonusChest-CircleGlow")
-							self2.glow:SetPoint("CENTER")
-							self2.glow:SetSize(1,1)
-							self2.glow:SetVertexColor(0.2745,0.7529,0.8313)
-							self2.glow:SetBlendMode("ADD")
-							self2.glow:SetDrawLayer("OVERLAY",7)
+						if not self.db.isMinimal then
+							if not self2.innerCircle then
+								isMinimalCreateTextures(self2)
+							end
+							self2.glowFrame.glow:SetAtlas("greatVault-keyHole-glow")
+							self2.innerFrame.highlight2:SetAtlas("ChallengeMode-Runes-GlowBurstLarge")
+							self2.innerFrame.highlight:SetAtlas("ChallengeMode-Runes-GlowSmall")
+							self2.innerCircle:SetAtlas("ChallengeMode-Runes-InnerCircleGlow")
+							self2.tex2:SetAtlas("ChallengeMode-Runes-GlowBurstLarge")
+							self2.animGroup:Play()
+							self2.innerFrame.animGroup:Play()
+							self2.glowFrame.animGroup:Play()
 						end
-						--Large
 						self2.tex:SetAtlas("ChallengeMode-Runes-GlowLarge")
 						self2.tex:SetBlendMode("ADD")
-						
-						
-						self2.tex2 = self2.tex2 or self2:CreateTexture()
-						self2.tex2:SetAtlas("ChallengeMode-Runes-GlowBurstLarge")
-						self2.tex2:SetPoint("CENTER")
-						self2.tex2:SetAllPoints()
-						self2.tex2:SetBlendMode("BLEND")
-						self2.tex2:SetDrawLayer("OVERLAY",7)
-						if not self.db.isMinimal then
-							self2.rotateTimer = C_Timer.NewTicker(0.03333,function(t) 
-								self2.highlight:SetRotation(self2.highlight:GetRotation()+0.02)
-								self2.highlight2:SetRotation(self2.highlight:GetRotation()+0.02)
-								self2.tex:SetRotation(self2.tex:GetRotation()-0.01)
-								self2.tex2:SetRotation(self2.tex:GetRotation()-0.01)
-								self2.glow:SetSize(glowSize*math.abs(0.5*math.sin(self2.tex:GetRotation())),glowSize*math.abs(0.5*math.sin(self2.tex:GetRotation())))
-							end)
-						end
+						self2.tex:SetDrawLayer("OVERLAY",7)
 					end)
 					btn:SetScript("OnLeave", function(self2,motion)
 						if not self.db.isMinimal then
-							--self2.lines:SetTexture()
+							self2.glowFrame.glow:SetTexture()
+							self2.innerFrame.highlight2:SetTexture()
+							self2.innerFrame.highlight:SetTexture()
 							self2.innerCircle:SetTexture()
-							--self2.topRune:SetTexture()
-							--self2.leftRune:SetTexture()
-							--self2.rightRune:SetTexture()
-							--self2.bottomLeftRune:SetTexture()
-							--self2.bottomRightRune:SetTexture()
-							self2.highlight:SetTexture()
-							self2.highlight2:SetTexture()
-							self2.glow:SetTexture()
-							
-							if self2.rotateTimer and not self2.rotateTimer:IsCancelled() then
-								self2.rotateTimer:Cancel()
-							end
+							self2.tex2:SetTexture()
+							self2.animGroup:Stop()
+							self2.innerFrame.animGroup:Stop()
+							self2.glowFrame.animGroup:Stop()
 						end
-						self2.tex2:SetTexture()
 						self2.tex:SetAtlas("ChallengeMode-Runes-Large")
 						self2.tex:SetBlendMode("BLEND")
-						self2.tex:SetVertexColor(1,1,1)
 					end)
 					self.DTButtons[k] = btn
 					self.isbuttonscreated = true
@@ -218,6 +204,7 @@ function f:CreateDungeonButtons ()
 		end
 	end
 end
+
 
 f.DungeonMapToPortal = {
         -- Cataclysm
