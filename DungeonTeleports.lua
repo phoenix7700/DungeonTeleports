@@ -283,7 +283,7 @@ f.DungeonMapToPortal = {
         [403] = 393222, -- Uldaman: Legacy of Tyr
         [404] = 393276, -- Neltharus
         [405] = 393267, -- Brackenhide Hollow
-        [406] = 93283, -- Halls of Infusion
+        [406] = 393283, -- Halls of Infusion
         [463] = 424197, -- Dawn of the Inifine: Galakrond's Fall
         [464] = 424197, -- Dawn of the Inifine: Murozond's Rise
         
