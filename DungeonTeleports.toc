@@ -3,6 +3,6 @@
 ## Title: Dungeon Teleports
 ## Notes: Add clickable dungeon teleports to Mythic+ Dungeons tab
 ## Author: Phoenix7700
-## SavedVariables: DTDB
+## SavedVariables: DungeonTeleports_SavedData
 
 DungeonTeleports.lua

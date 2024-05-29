@@ -6,8 +6,8 @@ f = CreateFrame("Frame", name, ChallengesFrame)
 
 
 local defaults = {
-	isMinimal = false,
-	hideKnown = true,
+	hideHoverAnimation = false,
+	hideKnown = false,
 }
 --Options
 local panel = CreateFrame("Frame")
@@ -18,11 +18,11 @@ local title = panel:CreateFontString("ARTWORK",nil,"GameFontNormalLarge")
 title:SetPoint("TOP")
 title:SetText("Dungeon Teleports")
 
-local isMinimalCheckButton = CreateFrame("CheckButton",nil,panel,"InterfaceOptionsCheckButtonTemplate")
-isMinimalCheckButton:SetPoint("TOPLEFT", 20,-20)
-isMinimalCheckButton.Text:SetText("Hide Hover Animation")
-isMinimalCheckButton:HookScript("OnClick", function()
-	f.db.isMinimal = not f.db.isMinimal
+local hideHoverAnimationCheckButton = CreateFrame("CheckButton",nil,panel,"InterfaceOptionsCheckButtonTemplate")
+hideHoverAnimationCheckButton:SetPoint("TOPLEFT", 20,-20)
+hideHoverAnimationCheckButton.Text:SetText("Hide Hover Animation")
+hideHoverAnimationCheckButton:HookScript("OnClick", function()
+	f.db.hideHoverAnimation = not f.db.hideHoverAnimation
 	f.isbuttonscreated = false
 	f:CreateDungeonButtons()	
 end)
@@ -53,14 +53,14 @@ local function OnEvent(self, event, addon)
 		Initialize(self)
 		self:UnregisterEvent("ADDON_LOADED")
 	elseif addon == name then
-		DTDB = DTDB or {}
-		self.db = DTDB
+		DungeonTeleports_SavedData = DungeonTeleports_SavedData or {}
+		self.db = DungeonTeleports_SavedData
 		for k,v in pairs(defaults) do
 			if self.db[k] == nil then
 				self.db[k] = v
 			end
 		end
-		isMinimalCheckButton:SetChecked(self.db.isMinimal)
+		hideHoverAnimationCheckButton:SetChecked(self.db.hideHoverAnimation)
 		hideKnownCheckButton:SetChecked(self.db.hideKnown)
 	end
 end
@@ -71,9 +71,9 @@ f:HookScript("OnEvent",OnEvent)
 f.isbuttonscreated = false
 f.DTButtons = {}
 
-local function isMinimalCreateTextures(frame)
+local function hideHoverAnimationCreateTextures(frame)
 	local glowSize = 100
-	if not f.db.isMinimal then 
+	if not f.db.hideHoverAnimation then 
 		--Circles
 		frame.innerCircle = frame.innerCircle or frame:CreateTexture()
 		frame.innerCircle:SetPoint("CENTER")
@@ -200,9 +200,9 @@ function f:CreateDungeonButtons ()
 
 								
 			btn:SetScript("OnEnter", function(self2,motion)
-				if not self.db.isMinimal then
+				if not self.db.hideHoverAnimation then
 					if not self2.innerCircle then
-						isMinimalCreateTextures(self2)
+						hideHoverAnimationCreateTextures(self2)
 					end
 					self2.glowFrame.glow:SetAtlas("greatVault-keyHole-glow")
 					self2.innerFrame.highlight2:SetAtlas("ChallengeMode-Runes-GlowBurstLarge")
@@ -213,7 +213,7 @@ function f:CreateDungeonButtons ()
 					self2.innerFrame.animGroup:Play()
 					self2.glowFrame.animGroup:Play()
 				end
-				if not f.db.hideKnown or not self.db.isMinimal then
+				if not f.db.hideKnown or not self.db.hideHoverAnimation then
 					self2.tex:SetAtlas("ChallengeMode-Runes-GlowLarge")
 					self2.tex:SetBlendMode("ADD")
 					self2.tex:SetDrawLayer("OVERLAY",7)
@@ -235,7 +235,7 @@ function f:CreateDungeonButtons ()
 				GameTooltip:Show()
 			end)
 			btn:SetScript("OnLeave", function(self2,motion)
-				if not self.db.isMinimal then
+				if not self.db.hideHoverAnimation then
 					self2.glowFrame.glow:SetTexture()
 					self2.innerFrame.highlight2:SetTexture()
 					self2.innerFrame.highlight:SetTexture()
