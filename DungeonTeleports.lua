@@ -1,7 +1,8 @@
 --/run ViragDevTool_AddData(CopyTable(ChallengesFrame),"Challenges")
-local _, shared = ...
+local addonName, shared = ...
 local f = shared.f
 local name = "DungeonTeleports"
+local version = C_AddOns.GetAddOnMetadata(addonName, "Version") or "0"
 f = CreateFrame("Frame", name, ChallengesFrame)
 
 
@@ -11,13 +12,48 @@ local defaults = {
 }
 
 --Options
+--local category = Settings.RegisterVerticalLayoutCategory(name)
+
+-- local function OnSettingChange(setting, value)
+-- 	print("Setting changed: ",setting:GetVariable(), value)
+-- 	f.isbuttonscreated = false
+-- 	f:CreateDungeonButtons()
+-- end
+
+-- --Hide Hover Checkbox
+-- do
+-- 	local name = "Hide Hover Animation"
+-- 	local variable = "DungeonTeleports_HideHoverAnimation"
+-- 	local key = "hideHoverAnimation"
+-- 	local table = DungeonTeleports_SavedData
+-- 	local default = false
+-- 	local setting = Settings.RegisterAddOnSetting(category,variable,key,table,type(default),name,default)
+-- 	print(setting,"Setting Hide hover")
+-- 	setting:SetValueChangedCallback(OnSettingChanged)
+-- 	Settings.CreateCheckbox(category,setting,"")
+-- end
+-- --Hide Known Checkbox
+-- do
+-- 	local name = "Hide Known"
+-- 	local variable = "DungeonTeleports_HideKnown"
+-- 	local key = "hideKnownCheckButton"
+-- 	local table = DungeonTeleports_SavedData
+-- 	local default = false
+-- 	local setting = Settings.RegisterAddOnSetting(category,variable,key,table,type(default),name,default)
+-- 	setting:SetValueChangedCallback(OnSettingChanged)
+-- 	Settings.CreateCheckbox(category,setting,"")
+-- end
+
 local panel = CreateFrame("Frame")
 panel.name = "Dungeon Teleports"
-InterfaceOptions_AddCategory(panel)
+--InterfaceOptions_AddCategory(panel)
+local category, layout = Settings.RegisterCanvasLayoutCategory(panel,panel.name)
+Settings.RegisterAddOnCategory(category)
+shared.settingsCategory = category
 
 local title = panel:CreateFontString("ARTWORK",nil,"GameFontNormalLarge")
 title:SetPoint("TOP")
-title:SetText("Dungeon Teleports")
+title:SetText("Dungeon Teleports "..version)
 
 local hideHoverAnimationCheckButton = CreateFrame("CheckButton",nil,panel,"InterfaceOptionsCheckButtonTemplate")
 hideHoverAnimationCheckButton:SetPoint("TOPLEFT", 20,-20)
@@ -246,7 +282,6 @@ function f:UpdateDungeonButtons()
 					self.DTButtons[k].outerCircle:SetAtlas("ChallengeMode-Runes-Large")
 					self.DTButtons[k].outerCircle:SetBlendMode("BLEND")
 					self.DTButtons[k].outerCircle:Show()
-					self.DTButtons[k].outerCircleTrim:Show()
 				end
 				if f.db.hideHoverAnimation then
 					self.DTButtons[k].glowFrame.glow:Hide()
@@ -328,11 +363,12 @@ f:HookScript("OnEvent",OnEvent)
 f.isbuttonscreated = false
 f.DTButtons = {}
 
-
+--C_ChallengeMode.GetMapUIInfo(mapID)
 f.DungeonMapToPortal = {
         -- Cataclysm
         [438] = 410080, -- The Vortex Pinnacle
         [456] = 424142, -- Throne of the Tides
+		[507] = 445424, -- Grim Batol
         
         -- Pandaria
         [2]   = 131204, -- Temple of the Jade Serpent
@@ -381,10 +417,9 @@ f.DungeonMapToPortal = {
         [250] = 0, -- Temple of Sethraliss
         [251] = 410074, -- The Underrot
         [252] = 0, -- Shrine of the Storm
-        [353] = 0, -- Siege of Boralus
+        [353] = 445418, -- Siege of Boralus
         [369] = 373274, -- Mechagon Junkyard
         [370] = 373274, -- Mechagon Workshop
-        
         
         -- Shadowlands
         [375] = 354464, -- Mists of Tirna Scithe
@@ -410,5 +445,14 @@ f.DungeonMapToPortal = {
         [463] = 424197, -- Dawn of the Inifine: Galakrond's Fall
         [464] = 424197, -- Dawn of the Inifine: Murozond's Rise
         
+		--The War Within
+		[499] = 445444, -- Priory of the Sacred Flame
+		[500] = 445443, -- The Rookery
+		[501] = 445269, -- The Stonevault
+		[502] = 445416, -- City of Threads
+		[503] = 445417, -- Ara-Kara, City of Echoes
+		[504] = 445441, -- Darkflame Cleft
+		[505] = 445414, -- The Dawnbreaker
+		[506] = 445440, -- Cinderbrew Meadery
     }
 

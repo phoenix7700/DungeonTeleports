@@ -1,5 +1,5 @@
-## Interface: 100207
-## Version: 1.2.2
+## Interface: 110000
+## Version: 1.2.3
 ## IconTexture: Interface\AddOns\DungeonTeleports\icon.blp
 ## Title: Dungeon Teleports
 ## Notes: Add clickable dungeon teleports to Mythic+ Dungeons tab
