@@ -1,4 +1,4 @@
-Dungeon Teleports made for Dragonflight 10.2.7
+Dungeon Teleports Updated for 11.0.0
 Key Features:
 
 Dungeon Teleport Buttons: Adds intuitive teleport buttons directly to your Mythic+ Dungeon panel for each dungeon portal you've unlocked.
