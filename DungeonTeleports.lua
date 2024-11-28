@@ -11,42 +11,8 @@ local defaults = {
 	hideKnown = false,
 }
 
---Options
---local category = Settings.RegisterVerticalLayoutCategory(name)
-
--- local function OnSettingChange(setting, value)
--- 	print("Setting changed: ",setting:GetVariable(), value)
--- 	f.isbuttonscreated = false
--- 	f:CreateDungeonButtons()
--- end
-
--- --Hide Hover Checkbox
--- do
--- 	local name = "Hide Hover Animation"
--- 	local variable = "DungeonTeleports_HideHoverAnimation"
--- 	local key = "hideHoverAnimation"
--- 	local table = DungeonTeleports_SavedData
--- 	local default = false
--- 	local setting = Settings.RegisterAddOnSetting(category,variable,key,table,type(default),name,default)
--- 	print(setting,"Setting Hide hover")
--- 	setting:SetValueChangedCallback(OnSettingChanged)
--- 	Settings.CreateCheckbox(category,setting,"")
--- end
--- --Hide Known Checkbox
--- do
--- 	local name = "Hide Known"
--- 	local variable = "DungeonTeleports_HideKnown"
--- 	local key = "hideKnownCheckButton"
--- 	local table = DungeonTeleports_SavedData
--- 	local default = false
--- 	local setting = Settings.RegisterAddOnSetting(category,variable,key,table,type(default),name,default)
--- 	setting:SetValueChangedCallback(OnSettingChanged)
--- 	Settings.CreateCheckbox(category,setting,"")
--- end
-
 local panel = CreateFrame("Frame")
 panel.name = "Dungeon Teleports"
---InterfaceOptions_AddCategory(panel)
 local category, layout = Settings.RegisterCanvasLayoutCategory(panel,panel.name)
 Settings.RegisterAddOnCategory(category)
 shared.settingsCategory = category
@@ -417,7 +383,7 @@ f.DungeonMapToPortal = {
         [250] = 0, -- Temple of Sethraliss
         [251] = 410074, -- The Underrot
         [252] = 0, -- Shrine of the Storm
-        [353] = 445418, -- Siege of Boralus
+        [353] = 445418, -- Siege of Boralus (Alliance)
         [369] = 373274, -- Mechagon Junkyard
         [370] = 373274, -- Mechagon Workshop
         
@@ -455,4 +421,9 @@ f.DungeonMapToPortal = {
 		[505] = 445414, -- The Dawnbreaker
 		[506] = 445440, -- Cinderbrew Meadery
     }
+
+	--Siege of Boralus has different horde and alliance teleport IDs change ID if character is Horde.
+	if UnitFactionGroup("player") == "Horde" then
+		f.DungeonMapToPortal[353] = 464256
+	end
 
