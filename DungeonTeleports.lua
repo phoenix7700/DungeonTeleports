@@ -377,7 +377,7 @@ f.DungeonMapToPortal = {
         [244] = 424187, -- Atal'Dazar
         [245] = 410071, -- Freehold
         [246] = 0, -- Tol Dagor
-        [247] = 0, -- The MOTHERLODE!!
+        [247] = 467553, -- The MOTHERLODE!!
         [248] = 424167, -- Waycrest Manor
         [249] = 0, -- Kings' Rest
         [250] = 0, -- Temple of Sethraliss
@@ -420,7 +420,8 @@ f.DungeonMapToPortal = {
 		[504] = 445441, -- Darkflame Cleft
 		[505] = 445414, -- The Dawnbreaker
 		[506] = 445440, -- Cinderbrew Meadery
-    }
+		[507] = 1216786, -- Operation: Floodgate
+	}
 
 	--Siege of Boralus has different horde and alliance teleport IDs change ID if character is Horde.
 	if UnitFactionGroup("player") == "Horde" then
