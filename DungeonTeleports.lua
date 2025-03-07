@@ -5,7 +5,6 @@ local name = "DungeonTeleports"
 local version = C_AddOns.GetAddOnMetadata(addonName, "Version") or "0"
 f = CreateFrame("Frame", name, ChallengesFrame)
 
-
 local defaults = {
 	hideHoverAnimation = false,
 	hideKnown = false,
@@ -420,7 +419,7 @@ f.DungeonMapToPortal = {
 		[504] = 445441, -- Darkflame Cleft
 		[505] = 445414, -- The Dawnbreaker
 		[506] = 445440, -- Cinderbrew Meadery
-		[507] = 1216786, -- Operation: Floodgate
+		[525] = 1216786, -- Operation: Floodgate
 	}
 
 	--Siege of Boralus has different horde and alliance teleport IDs change ID if character is Horde.
