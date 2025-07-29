@@ -440,7 +440,7 @@ f.DungeonMapToPortal = {
         [244] = {424187, 467553}, -- Atal'Dazar
         [245] = {410071, 445418}, -- Freehold
         [246] = {0}, -- Tol Dagor
-        [247] = {467553, 424187}, -- The MOTHERLODE!!
+        [247] = {467553, 424187}, -- The MOTHERLODE!! (Alliance)
         [248] = {424167}, -- Waycrest Manor
         [249] = {0}, -- Kings' Rest
         [250] = {0}, -- Temple of Sethraliss
@@ -486,9 +486,11 @@ f.DungeonMapToPortal = {
 		[525] = {1216786, 445441, 445269} , -- Operation: Floodgate
 	}
 
-	--Siege of Boralus has different horde and alliance teleport IDs change ID if character is Horde.
+	--Fix different horde and alliance teleport IDs change ID if character is Horde.
 	if UnitFactionGroup("player") == "Horde" then
-		f.DungeonMapToPortal[353] = {464256, 410071}
-		f.DungeonMapToPortal[245] = {410071, 464256}
+		f.DungeonMapToPortal[353] = {464256, 410071} -- Siege of Boralus
+		f.DungeonMapToPortal[245] = {410071, 464256} -- Freehold (Different Siege Number)
+		f.DungeonMapToPortal[247] = {467555, 424187} -- MOTHERLODE
+		f.DungeonMapToPortal[244] = {424187, 467555}, -- Atal'Dazar (Different MOTHERLODE Number)
 	end
 
