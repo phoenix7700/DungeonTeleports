@@ -491,6 +491,6 @@ f.DungeonMapToPortal = {
 		f.DungeonMapToPortal[353] = {464256, 410071} -- Siege of Boralus
 		f.DungeonMapToPortal[245] = {410071, 464256} -- Freehold (Different Siege Number)
 		f.DungeonMapToPortal[247] = {467555, 424187} -- MOTHERLODE
-		f.DungeonMapToPortal[244] = {424187, 467555}, -- Atal'Dazar (Different MOTHERLODE Number)
+		f.DungeonMapToPortal[244] = {424187, 467555} -- Atal'Dazar (Different MOTHERLODE Number)
 	end
 
