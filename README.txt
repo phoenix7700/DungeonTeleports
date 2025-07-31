@@ -1,4 +1,4 @@
-Dungeon Teleports Updated for 11.0.0
+Dungeon Teleports Updated for 11.2.0
 Key Features:
 
 Dungeon Teleport Buttons: Adds intuitive teleport buttons directly to your Mythic+ Dungeon panel for each dungeon portal you've unlocked.

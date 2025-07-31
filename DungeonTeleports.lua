@@ -80,8 +80,6 @@ local function OnEvent(self, event, addon)
 end
 --
 local function CreateHoverAnimationTextures(frame)
-	local glowSize = 100
-	if not f.db.hideHoverAnimation then 
 		--Circles
 		frame.innerCircle = frame.innerCircle or frame:CreateTexture()
 		frame.innerCircle:SetPoint("CENTER")
@@ -116,13 +114,6 @@ local function CreateHoverAnimationTextures(frame)
 		frame.innerFrame.highlight:SetAtlas("ChallengeMode-Runes-GlowSmall")
 		frame.innerCircle:SetAtlas("ChallengeMode-Runes-InnerCircleGlow")
 		frame.outerCircleTrim:SetAtlas("ChallengeMode-Runes-GlowBurstLarge")
-
-		if f.db.useBackupPortals then
-			frame.innerFrame.highlight:SetVertexColor(0,1,0)
-			frame.innerFrame.highlight2:SetVertexColor(0,1,0)
-			frame.innerCircle:SetVertexColor(0,1,0)
-		end
-	end
 end
 --
 function f:SetupDungeonButtonFrames(button)
@@ -176,7 +167,6 @@ function f:SetupDungeonButtonFrames(button)
 	button.glowFrame.scale2:SetSmoothing("IN_OUT")
 
 	CreateHoverAnimationTextures(button)
-	
 					
 	button:SetScript("OnEnter", function(self2,motion)
 		if not self.db.hideHoverAnimation then
@@ -253,6 +243,7 @@ function f:SetupDungeonButtonFrames(button)
 			button.innerFrame.highlight2:SetVertexColor(red,green,blue)
 			button.innerFrame.highlight:SetVertexColor(red,green,blue)
 			button.innerCircle:SetVertexColor(red,green,blue)
+			button.glowFrame.glow:SetVertexColor(red,green,blue)
 		end
 	end
 
@@ -280,6 +271,7 @@ function f:UpdateDungeonButtons()
 					self.DTButtons[k].outerCircle:SetAtlas("ChallengeMode-Runes-Large")
 					self.DTButtons[k].outerCircle:SetBlendMode("BLEND")
 					self.DTButtons[k]:SetButtonColor(1,1,1)
+					self.DTButtons[k].glowFrame.glow:SetVertexColor(0.2745,0.7529,0.8313)
 					self.DTButtons[k].outerCircle:Show()
 				end
 
@@ -391,8 +383,11 @@ end
 function f:IsUsingBackupPortal (mapID,portalID)
 	return portalID ~= f.DungeonMapToPortal[mapID][1]
 end
-
---C_ChallengeMode.GetMapUIInfo(mapID)
+--[[
+for k,mapID in pairs(C_ChallengeMode.GetMapTable()) do
+	print(mapID .."=".. C_ChallengeMode.GetMapUIInfo(mapID))
+end
+	]]
 f.DungeonMapToPortal = {
         -- Cataclysm
         [438] = {410080}, -- The Vortex Pinnacle
@@ -484,6 +479,8 @@ f.DungeonMapToPortal = {
 		[505] = {445414, 445444} , -- The Dawnbreaker
 		[506] = {445440, 445443} , -- Cinderbrew Meadery
 		[525] = {1216786, 445441, 445269} , -- Operation: Floodgate
+		[542] = {1237215}, --Exo-Dome Al'dani
+
 	}
 
 	--Fix different horde and alliance teleport IDs change ID if character is Horde.
