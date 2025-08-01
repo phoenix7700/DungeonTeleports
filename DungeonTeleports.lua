@@ -198,7 +198,7 @@ function f:SetupDungeonButtonFrames(button)
 		if mPlusMapScoreInfo then
 			for _,affixInfo in pairs(mPlusMapScoreInfo) do
 				GameTooltip:AddLine(" ")
-				GameTooltip:AddLine("Best "..affixInfo.name)
+				GameTooltip:AddLine("Best Run "..affixInfo.name)
 				GameTooltip:AddLine(WrapTextInColorCode("Level "..affixInfo.level,"FFFFFFFF"))
 				GameTooltip:AddLine(WrapTextInColorCode(string.format("%d:%.2d",affixInfo.durationSec/60,affixInfo.durationSec%60),"FFFFFFFF"))
 			end
