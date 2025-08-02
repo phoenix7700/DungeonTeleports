@@ -1,4 +1,4 @@
-## Interface: 110200
+## Interface: 110107, 110200
 ## Version: 1.3.3
 ## IconTexture: Interface\AddOns\DungeonTeleports\icon.blp
 ## Title: Dungeon Teleports
