@@ -384,11 +384,23 @@ function f:IsUsingBackupPortal (mapID,portalID)
 	return portalID ~= f.DungeonMapToPortal[mapID][1]
 end
 --[[
+--Get all Current MapID
 for k,mapID in pairs(C_ChallengeMode.GetMapTable()) do
 	print(mapID .."=".. C_ChallengeMode.GetMapUIInfo(mapID))
 end
-	]]
+--List ALL MapID
+mapID=1 
+while mapID < 1000 do
+	name = C_ChallengeMode.GetMapUIInfo(mapID)
+	if name then
+		print(mapID .."=".. name)
+	end
+	mapID = mapID + 1 
+end
+]]
 f.DungeonMapToPortal = {
+		-- Wrath
+		[556]  = {1254555}, -- Pit of Saron
         -- Cataclysm
         [438] = {410080}, -- The Vortex Pinnacle
         [456] = {424142}, -- Throne of the Tides
@@ -428,7 +440,7 @@ f.DungeonMapToPortal = {
         [227] = {373262}, -- Lower Karazhan
         [233] = {0}, -- Cathedral of Eternal Night
         [234] = {373262}, -- Upper Karazhan
-        [239] = {0}, -- Seat of the Triumvirate
+        [239] = {1254551}, -- Seat of the Triumvirate
         -- [] = {}, -- Violet Hold?
         
         -- Battle for Azeroth
@@ -480,6 +492,12 @@ f.DungeonMapToPortal = {
 		[506] = {445440, 445443} , -- Cinderbrew Meadery
 		[525] = {1216786, 445441, 445269} , -- Operation: Floodgate
 		[542] = {1237215}, --Exo-Dome Al'dani
+		
+		--Midnight
+		[557] = {1254400}, -- Windrunner Spire
+		[558] = {1254572}, -- Magisters' Terrace
+		[559] = {1254563}, --Nexus-Point Xenas
+		[560] = {1254559}, -- Maisara Caverns
 
 	}
 
