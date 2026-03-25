@@ -1,4 +1,4 @@
---/run ViragDevTool_AddData(CopyTable(ChallengesFrame),"Challenges")
+--/run DevTool:AddData(CopyTable(ChallengesFrame),"Challenges")
 local addonName, shared = ...
 local f = shared.f
 local name = "DungeonTeleports"
@@ -113,7 +113,7 @@ local function CreateHoverAnimationTextures(frame)
 		frame.innerFrame.highlight2:SetAtlas("ChallengeMode-Runes-GlowBurstLarge")
 		frame.innerFrame.highlight:SetAtlas("ChallengeMode-Runes-GlowSmall")
 		frame.innerCircle:SetAtlas("ChallengeMode-Runes-InnerCircleGlow")
-		frame.outerCircleTrim:SetAtlas("ChallengeMode-Runes-GlowBurstLarge")
+		frame.outerFrame.outerCircleTrim:SetAtlas("ChallengeMode-Runes-GlowBurstLarge")
 end
 --
 function f:SetupDungeonButtonFrames(button)
@@ -127,24 +127,31 @@ function f:SetupDungeonButtonFrames(button)
 	button:SetFrameLevel(3)
 	button.innerFrame:SetAllPoints()
 	button.glowFrame:SetAllPoints()
-	button.outerCircle:SetAllPoints()
+	button.outerFrame:SetAllPoints()
+	button.txtFrame:SetAllPoints()
+	
+	button.txtFrame.HighestLevel:SetPoint("TOP",button,"TOP",0,-4)
+	button.txtFrame.HighestLevel:SetFontObject(SystemFont_Huge1_Outline)
+	button.txtFrame.HighestLevel:SetJustifyH("Center")
+	button.txtFrame.HighestLevel:SetText("")
 	
 	--Display Portal
-	button.outerCircle:SetAtlas("ChallengeMode-Runes-Large")
-	button.outerCircle:SetBlendMode("BLEND")
-	button.outerCircle:SetDrawLayer("OVERLAY",7)
+	button.outerFrame.outerCircle:SetAllPoints()
+	button.outerFrame.outerCircle:SetAtlas("ChallengeMode-Runes-Large")
+	button.outerFrame.outerCircle:SetBlendMode("BLEND")
+	button.outerFrame.outerCircle:SetDrawLayer("OVERLAY",7)
 		
 
-	button.outerCircleTrim:SetPoint("CENTER")
-	button.outerCircleTrim:SetAllPoints()
-	button.outerCircleTrim:SetBlendMode("BLEND")
-	button.outerCircleTrim:SetDrawLayer("OVERLAY",7)
+	button.outerFrame.outerCircleTrim:SetPoint("CENTER")
+	button.outerFrame.outerCircleTrim:SetAllPoints()
+	button.outerFrame.outerCircleTrim:SetBlendMode("BLEND")
+	button.outerFrame.outerCircleTrim:SetDrawLayer("OVERLAY",7)
 	
 	--Hover
-	button.animGroup:SetLooping("REPEAT")
-	button.rotate1:SetDegrees(-360)
-	button.rotate1:SetDuration(60)
-	button.rotate1:SetSmoothing("OUT")
+	button.outerFrame.animGroup:SetLooping("REPEAT")
+	button.outerFrame.rotate1:SetDegrees(-360)
+	button.outerFrame.rotate1:SetDuration(60)
+	button.outerFrame.rotate1:SetSmoothing("OUT")
 		
 	button.innerFrame.animGroup:SetLooping("REPEAT")
 	button.innerFrame.rotate1:SetDegrees(720)
@@ -174,16 +181,16 @@ function f:SetupDungeonButtonFrames(button)
 			self2.innerFrame.highlight2:Show()
 			self2.innerFrame.highlight:Show()
 			self2.innerCircle:Show()
-			self2.outerCircle:Show()
-			self2.outerCircleTrim:Show()
-			self2.animGroup:Play()
+			self2.outerFrame.outerCircle:Show()
+			self2.outerFrame.outerCircleTrim:Show()
+			self2.outerFrame.animGroup:Play()
 			self2.innerFrame.animGroup:Play()
 			self2.glowFrame.animGroup:Play()
 		end
 		if not f.db.hideKnown or not self.db.hideHoverAnimation then
-			self2.outerCircle:SetAtlas("ChallengeMode-Runes-GlowLarge")
-			self2.outerCircle:SetBlendMode("ADD")
-			self2.outerCircle:SetDrawLayer("OVERLAY",7)
+			self2.outerFrame.outerCircle:SetAtlas("ChallengeMode-Runes-GlowLarge")
+			self2.outerFrame.outerCircle:SetBlendMode("ADD")
+			self2.outerFrame.outerCircle:SetDrawLayer("OVERLAY",7)
 		end
 
 		--Tooltip Handling
@@ -192,7 +199,7 @@ function f:SetupDungeonButtonFrames(button)
 		GameTooltip:SetOwner(self2,"ANCHOR_RIGHT",-10)
 		GameTooltip:AddLine(WrapTextInColorCode(dungeonMapName,"FFFFFFFF"))
 		if totalScore then
-			local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(totalScore)
+			local color = f:GetDungeonTextColor(button.mapID)
 			GameTooltip:AddLine("Rating: "..color:WrapTextInColorCode(tostring(totalScore)))
 		end
 		if mPlusMapScoreInfo then
@@ -211,17 +218,17 @@ function f:SetupDungeonButtonFrames(button)
 			self2.innerFrame.highlight2:Hide()
 			self2.innerFrame.highlight:Hide()
 			self2.innerCircle:Hide()
-			self2.outerCircleTrim:Hide()
-			self2.animGroup:Stop()
+			self2.outerFrame.outerCircleTrim:Hide()
+			self2.outerFrame.animGroup:Stop()
 			self2.innerFrame.animGroup:Stop()
 			self2.glowFrame.animGroup:Stop()
 		end
 		if not f.db.hideKnown then
-			self2.outerCircle:SetAtlas("ChallengeMode-Runes-Large")
-			self2.outerCircle:SetBlendMode("BLEND")
+			self2.outerFrame.outerCircle:SetAtlas("ChallengeMode-Runes-Large")
+			self2.outerFrame.outerCircle:SetBlendMode("BLEND")
 		else
-			self2.outerCircle:Hide()
-			self2.outerCircleTrim:Hide()
+			self2.outerFrame.outerCircle:Hide()
+			self2.outerFrame.outerCircleTrim:Hide()
 		end
 		GameTooltip:Hide()
 	end)
@@ -235,8 +242,8 @@ function f:SetupDungeonButtonFrames(button)
 	end
 
 	function button:SetButtonColor(red, green, blue)
-		button.outerCircle:SetVertexColor(red,green,blue)
-		button.outerCircleTrim:SetVertexColor(red,green,blue)
+		button.outerFrame.outerCircle:SetVertexColor(red,green,blue)
+		button.outerFrame.outerCircleTrim:SetVertexColor(red,green,blue)
 		
 		local highlight2 = button.innerFrame.highlight2
 		if highlight2 then
@@ -265,14 +272,14 @@ function f:UpdateDungeonButtons()
 			elseif IsSpellKnown(portalID) then
 				self.DTButtons[k]:ShowAllElements()
 				if f.db.hideKnown then
-					self.DTButtons[k].outerCircle:Hide()
-					self.DTButtons[k].outerCircleTrim:Hide()
+					self.DTButtons[k].outerFrame.outerCircle:Hide()
+					self.DTButtons[k].outerFrame.outerCircleTrim:Hide()
 				else
-					self.DTButtons[k].outerCircle:SetAtlas("ChallengeMode-Runes-Large")
-					self.DTButtons[k].outerCircle:SetBlendMode("BLEND")
+					self.DTButtons[k].outerFrame.outerCircle:SetAtlas("ChallengeMode-Runes-Large")
+					self.DTButtons[k].outerFrame.outerCircle:SetBlendMode("BLEND")
 					self.DTButtons[k]:SetButtonColor(1,1,1)
 					self.DTButtons[k].glowFrame.glow:SetVertexColor(0.2745,0.7529,0.8313)
-					self.DTButtons[k].outerCircle:Show()
+					self.DTButtons[k].outerFrame.outerCircle:Show()
 				end
 
 				if f.db.hideHoverAnimation then
@@ -280,7 +287,7 @@ function f:UpdateDungeonButtons()
 					self.DTButtons[k].innerFrame.highlight2:Hide()
 					self.DTButtons[k].innerFrame.highlight:Hide()
 					self.DTButtons[k].innerCircle:Hide()
-					self.DTButtons[k].outerCircleTrim:Hide()
+					self.DTButtons[k].outerFrame.outerCircleTrim:Hide()
 				end
 				if self:IsUsingBackupPortal(iconFrame.mapID,self.DTButtons[k].portalSpellID) then
 					if not f.db.useBackupPortals then
@@ -289,10 +296,16 @@ function f:UpdateDungeonButtons()
 					self.DTButtons[k]:SetButtonColor(0,1,0)
 				end
 			end
+			self.DTButtons[k].txtFrame.HighestLevel:SetText(iconFrame.HighestLevel:GetText())
+			self.DTButtons[k].txtFrame.HighestLevel:SetTextColor(iconFrame.HighestLevel:GetTextColor())
+			iconFrame.HighestLevel:Hide()
 		elseif self.DTButtons[k] then
 			self.DTButtons[k].mapID = iconFrame.mapID
 			self.DTButtons[k].portalSpellID = portalID
 			self.DTButtons[k]:SetAttribute("spell", portalID)
+			self.DTButtons[k].txtFrame.HighestLevel:SetText(iconFrame.HighestLevel:GetText())
+			self.DTButtons[k].txtFrame.HighestLevel:SetTextColor(iconFrame.HighestLevel:GetTextColor())
+			iconFrame.HighestLevel:Hide()
 		else
 			if IsSpellKnown(portalID) then
 				--Create new button
@@ -306,17 +319,21 @@ function f:InitializeDungeonButton(parentFrame)
 	local btn 
 	btn = CreateFrame("Button","DTButton",parentFrame,"InsecureActionButtonTemplate")
 	btn.innerFrame = CreateFrame("Frame","DTButtonInner",btn)
+	btn.outerFrame = CreateFrame("Frame","DTButtonOuter",btn)
 	btn.glowFrame = CreateFrame("Frame","DTButtonGlow",parentFrame)
-	btn.outerCircle = btn:CreateTexture()
-	btn.outerCircleTrim = btn:CreateTexture()
-	btn.animGroup = btn:CreateAnimationGroup()
-	btn.rotate1 = btn.animGroup:CreateAnimation("Rotation")
+	btn.txtFrame = CreateFrame("Frame","DTButtonText",parentFrame)
+	btn.outerFrame.outerCircle = btn:CreateTexture()
+	btn.outerFrame.outerCircleTrim = btn:CreateTexture()
+	btn.outerFrame.animGroup = btn:CreateAnimationGroup()
+	btn.outerFrame.rotate1 = btn.outerFrame.animGroup:CreateAnimation("Rotation")
 	btn.innerFrame.animGroup = btn.innerFrame:CreateAnimationGroup()
 	btn.innerFrame.rotate1 = btn.innerFrame.animGroup:CreateAnimation("Rotation")
 	btn.glowFrame.animGroup = btn.glowFrame:CreateAnimationGroup()
 	btn.glowFrame.scale = btn.glowFrame.animGroup:CreateAnimation("Scale")
 	btn.glowFrame.scale2 = btn.glowFrame.animGroup:CreateAnimation("Scale")
 	btn.mapID = parentFrame.mapID
+	btn.txtFrame.HighestLevel = btn.txtFrame:CreateFontString("Highest Level")
+	btn.txtFrame:SetFrameLevel(5)
 	btn.portalSpellID = self:GetPortalFromDungeonMapID(btn.mapID)
 	
 	--btn.portalSpellID = 8936 --8936 Regrowth for testing
@@ -325,10 +342,10 @@ function f:InitializeDungeonButton(parentFrame)
 	btn.innerFrame.highlight2:Hide()
 	btn.innerFrame.highlight:Hide()
 	btn.innerCircle:Hide()
-	btn.outerCircleTrim:Hide()
+	btn.outerFrame.outerCircleTrim:Hide()
 	if f.db.hideKnown then
-		btn.outerCircle:Hide()
-		btn.outerCircleTrim:Hide()
+		btn.outerFrame.outerCircle:Hide()
+		btn.outerFrame.outerCircleTrim:Hide()
 	end
 	return btn
 end
@@ -356,9 +373,15 @@ function f:CreateDungeonButtons ()
 				self.DTButtons[k] = btn
 				self.isbuttonscreated = true
 			end
+			--Fix default text Draw Layer
+			--parentFrame.HighestLevel:SetPoint()
 		end
 	else
 		self:UpdateDungeonButtons()
+	end
+	if not ChallengesFrame.WeeklyInfo.Child.AffixesContainer then return end
+	for k,affix in pairs(ChallengesFrame.WeeklyInfo.Child.AffixesContainer.Affixes) do
+		affix.Portrait:SetMask([[Interface\CHARACTERFRAME\TempPortraitAlphaMask]])
 	end
 end
 
@@ -383,12 +406,35 @@ end
 function f:IsUsingBackupPortal (mapID,portalID)
 	return portalID ~= f.DungeonMapToPortal[mapID][1]
 end
+function f:GetDungeonTextColor(mapID)
+	local _, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(mapID);
+	local color;
+	if(overAllScore) then
+		color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(overAllScore);
+	end
+	if(not color) then
+		color = HIGHLIGHT_FONT_COLOR;
+	end
+	return color
+end
 --[[
+--Get all Current MapID
 for k,mapID in pairs(C_ChallengeMode.GetMapTable()) do
 	print(mapID .."=".. C_ChallengeMode.GetMapUIInfo(mapID))
 end
-	]]
+--List ALL MapID
+mapID=1 
+while mapID < 1000 do
+	name = C_ChallengeMode.GetMapUIInfo(mapID)
+	if name then
+		print(mapID .."=".. name)
+	end
+	mapID = mapID + 1 
+end
+]]
 f.DungeonMapToPortal = {
+		-- Wrath
+		[556]  = {1254555}, -- Pit of Saron
         -- Cataclysm
         [438] = {410080}, -- The Vortex Pinnacle
         [456] = {424142}, -- Throne of the Tides
@@ -428,7 +474,7 @@ f.DungeonMapToPortal = {
         [227] = {373262}, -- Lower Karazhan
         [233] = {0}, -- Cathedral of Eternal Night
         [234] = {373262}, -- Upper Karazhan
-        [239] = {0}, -- Seat of the Triumvirate
+        [239] = {1254551}, -- Seat of the Triumvirate
         -- [] = {}, -- Violet Hold?
         
         -- Battle for Azeroth
@@ -480,6 +526,12 @@ f.DungeonMapToPortal = {
 		[506] = {445440, 445443} , -- Cinderbrew Meadery
 		[525] = {1216786, 445441, 445269} , -- Operation: Floodgate
 		[542] = {1237215}, --Exo-Dome Al'dani
+		
+		--Midnight
+		[557] = {1254400}, -- Windrunner Spire
+		[558] = {1254572}, -- Magisters' Terrace
+		[559] = {1254563}, --Nexus-Point Xenas
+		[560] = {1254559}, -- Maisara Caverns
 
 	}
 
