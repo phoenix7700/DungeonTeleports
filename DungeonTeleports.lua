@@ -200,13 +200,13 @@ function f:SetupDungeonButtonFrames(button)
 		GameTooltip:AddLine(WrapTextInColorCode(dungeonMapName,"FFFFFFFF"))
 		if totalScore then
 			local color = f:GetDungeonTextColor(button.mapID)
-			GameTooltip:AddLine("Rating: "..color:WrapTextInColorCode(tostring(totalScore)))
+			GameTooltip:AddLine(string.format(DUNGEON_SCORE_TOTAL_SCORE,color:WrapTextInColorCode(tostring(totalScore))))
 		end
 		if mPlusMapScoreInfo then
 			for _,affixInfo in pairs(mPlusMapScoreInfo) do
 				GameTooltip:AddLine(" ")
-				GameTooltip:AddLine("Best Run "..affixInfo.name)
-				GameTooltip:AddLine(WrapTextInColorCode("Level "..affixInfo.level,"FFFFFFFF"))
+				GameTooltip:AddLine(_G.LFG_LIST_BEST_RUN..affixInfo.name)
+				GameTooltip:AddLine(WrapTextInColorCode(string.format(_G.MYTHIC_PLUS_POWER_LEVEL,affixInfo.level),"FFFFFFFF"))
 				GameTooltip:AddLine(WrapTextInColorCode(string.format("%d:%.2d",affixInfo.durationSec/60,affixInfo.durationSec%60),"FFFFFFFF"))
 			end
 		end
